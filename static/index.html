@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="icon.ico" type="image/x-icon">
     <meta name="description" content="Sistema de gestão empresarial para controle interno, estoque e vendas">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -17,63 +18,133 @@
                 <h1>Controle Interno Visual Tech</h1>
             </div>
             <nav class="nav">
-                <button class="nav-btn active" data-section="dashboard">Dashboard</button>
-                <button class="nav-btn" data-section="produtos">Produtos</button>
-                <button class="nav-btn" data-section="estoque">Estoque</button>
-                <button class="nav-btn" data-section="vendas">Vendas</button>
-                <button class="nav-btn" data-section="relatorios">Relatórios</button>
+                <button class="nav-btn active" data-section="dashboard">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </button>
+                <button class="nav-btn" data-section="produtos">
+                    <i class="fas fa-box"></i> Produtos
+                </button>
+                <button class="nav-btn" data-section="estoque">
+                    <i class="fas fa-warehouse"></i> Estoque
+                </button>
+                <button class="nav-btn" data-section="vendas">
+                    <i class="fas fa-shopping-cart"></i> Vendas
+                </button>
+                <button class="nav-btn" data-section="relatorios">
+                    <i class="fas fa-chart-bar"></i> Relatórios
+                </button>
             </nav>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="sistema.forceSync()">
+                    <i class="fas fa-sync-alt"></i> Sincronizar
+                </button>
+                <button class="btn btn-info" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
             <!-- Dashboard Section -->
             <section id="dashboard" class="section active">
-                <h2>Dashboard Principal</h2>
+                <h2><i class="fas fa-chart-line"></i> Dashboard Principal</h2>
+                
+                <!-- Status Cards -->
                 <div class="dashboard-grid">
                     <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
                         <h3>Total de Produtos</h3>
-                        <p class="number">0</p>
+                        <p class="number" id="total-produtos">0</p>
                         <p class="label">Produtos cadastrados</p>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i> +12%
+                        </div>
                     </div>
                     <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-warehouse"></i>
+                        </div>
                         <h3>Estoque Total</h3>
-                        <p class="number">0</p>
+                        <p class="number" id="total-estoque">0</p>
                         <p class="label">Unidades em estoque</p>
+                        <div class="card-trend negative">
+                            <i class="fas fa-arrow-down"></i> -5%
+                        </div>
                     </div>
                     <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
                         <h3>Vendas do Mês</h3>
-                        <p class="number">0</p>
+                        <p class="number" id="vendas-mes">0</p>
                         <p class="label">Vendas realizadas</p>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i> +23%
+                        </div>
                     </div>
                     <div class="card">
+                        <div class="card-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
                         <h3>Receita Total</h3>
-                        <p class="number">R$ 0,00</p>
+                        <p class="number" id="receita-total">R$ 0,00</p>
                         <p class="label">Receita acumulada</p>
+                        <div class="card-trend positive">
+                            <i class="fas fa-arrow-up"></i> +18%
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráficos Rápidos -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-line"></i> Vendas dos Últimos 7 Dias</h3>
+                        <canvas id="vendas-chart" height="200"></canvas>
+                    </div>
+                    <div class="chart-card">
+                        <h3><i class="fas fa-chart-pie"></i> Produtos Mais Vendidos</h3>
+                        <canvas id="produtos-chart" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- Alertas e Notificações -->
+                <div class="alerts-section">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Alertas do Sistema</h3>
+                    <div class="alerts-grid" id="alerts-container">
+                        <!-- Alertas serão inseridos dinamicamente -->
                     </div>
                 </div>
             </section>
 
             <!-- Produtos Section -->
             <section id="produtos" class="section">
-                <h2>Gestão de Produtos</h2>
+                <h2><i class="fas fa-box"></i> Gestão de Produtos</h2>
                 <div class="actions">
-                    <button class="btn btn-primary" onclick="showAddProductForm()">+ Novo Produto</button>
+                    <button class="btn btn-primary" onclick="showAddProductForm()">
+                        <i class="fas fa-plus"></i> Novo Produto
+                    </button>
+                    <button class="btn btn-success" onclick="exportarProdutos()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Nome</th>
-                                <th>Categoria</th>
-                                <th>Preço</th>
-                                <th>Estoque</th>
-                                <th>Ações</th>
+                                <th><i class="fas fa-tag"></i> Nome</th>
+                                <th><i class="fas fa-list"></i> Categoria</th>
+                                <th><i class="fas fa-dollar-sign"></i> Preço</th>
+                                <th><i class="fas fa-warehouse"></i> Estoque</th>
+                                <th><i class="fas fa-chart-line"></i> Status</th>
+                                <th><i class="fas fa-cogs"></i> Ações</th>
                             </tr>
                         </thead>
                         <tbody id="produtos-table">
                             <tr>
-                                <td colspan="5" class="empty-message">Nenhum produto cadastrado</td>
+                                <td colspan="6" class="empty-message">Nenhum produto cadastrado</td>
                             </tr>
                         </tbody>
                     </table>
@@ -82,31 +153,45 @@
 
             <!-- Estoque Section -->
             <section id="estoque" class="section">
-                <h2>Controle de Estoque</h2>
+                <h2><i class="fas fa-warehouse"></i> Controle de Estoque</h2>
                 <div class="stock-overview">
                     <div class="stock-card">
-                        <h3>Produtos com Baixo Estoque</h3>
-                        <p class="number">0</p>
+                        <div class="stock-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Baixo Estoque</h3>
+                        <p class="number" id="baixo-estoque">0</p>
                     </div>
                     <div class="stock-card">
-                        <h3>Produtos em Falta</h3>
-                        <p class="number">0</p>
+                        <div class="stock-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3>Em Falta</h3>
+                        <p class="number" id="em-falta">0</p>
+                    </div>
+                    <div class="stock-card">
+                        <div class="stock-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Estoque OK</h3>
+                        <p class="number" id="estoque-ok">0</p>
                     </div>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Produto</th>
-                                <th>Quantidade</th>
-                                <th>Mínimo</th>
-                                <th>Status</th>
-                                <th>Ações</th>
+                                <th><i class="fas fa-box"></i> Produto</th>
+                                <th><i class="fas fa-sort-numeric-up"></i> Quantidade</th>
+                                <th><i class="fas fa-sort-numeric-down"></i> Mínimo</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
+                                <th><i class="fas fa-clock"></i> Última Atualização</th>
+                                <th><i class="fas fa-cogs"></i> Ações</th>
                             </tr>
                         </thead>
                         <tbody id="estoque-table">
                             <tr>
-                                <td colspan="5" class="empty-message">Nenhum item em estoque</td>
+                                <td colspan="6" class="empty-message">Nenhum item em estoque</td>
                             </tr>
                         </tbody>
                     </table>
@@ -115,24 +200,30 @@
 
             <!-- Vendas Section -->
             <section id="vendas" class="section">
-                <h2>Sistema de Vendas</h2>
+                <h2><i class="fas fa-shopping-cart"></i> Sistema de Vendas</h2>
                 <div class="actions">
-                    <button class="btn btn-primary" onclick="showAddSaleForm()">+ Nova Venda</button>
+                    <button class="btn btn-primary" onclick="showAddSaleForm()">
+                        <i class="fas fa-plus"></i> Nova Venda
+                    </button>
+                    <button class="btn btn-success" onclick="exportarVendas()">
+                        <i class="fas fa-download"></i> Exportar
+                    </button>
                 </div>
                 <div class="table-container">
                     <table class="table">
                         <thead>
                             <tr>
-                                <th>Data</th>
-                                <th>Cliente</th>
-                                <th>Produtos</th>
-                                <th>Total</th>
-                                <th>Status</th>
+                                <th><i class="fas fa-calendar"></i> Data</th>
+                                <th><i class="fas fa-user"></i> Cliente</th>
+                                <th><i class="fas fa-box"></i> Produtos</th>
+                                <th><i class="fas fa-dollar-sign"></i> Total</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
+                                <th><i class="fas fa-cogs"></i> Ações</th>
                             </tr>
                         </thead>
                         <tbody id="vendas-table">
                             <tr>
-                                <td colspan="5" class="empty-message">Nenhuma venda registrada</td>
+                                <td colspan="6" class="empty-message">Nenhuma venda registrada</td>
                             </tr>
                         </tbody>
                     </table>
@@ -141,15 +232,23 @@
 
             <!-- Relatórios Section -->
             <section id="relatorios" class="section">
-                <h2>Relatórios</h2>
+                <h2><i class="fas fa-chart-bar"></i> Relatórios Avançados</h2>
                 <div class="reports-grid">
                     <div class="report-card">
-                        <h3>Vendas por Período</h3>
-                        <canvas id="vendas-chart"></canvas>
+                        <h3><i class="fas fa-chart-line"></i> Vendas por Período</h3>
+                        <canvas id="vendas-chart" height="300"></canvas>
                     </div>
                     <div class="report-card">
-                        <h3>Produtos Mais Vendidos</h3>
-                        <canvas id="produtos-chart"></canvas>
+                        <h3><i class="fas fa-chart-pie"></i> Produtos Mais Vendidos</h3>
+                        <canvas id="produtos-chart" height="300"></canvas>
+                    </div>
+                    <div class="report-card">
+                        <h3><i class="fas fa-chart-bar"></i> Estoque por Produto</h3>
+                        <canvas id="estoque-chart" height="300"></canvas>
+                    </div>
+                    <div class="report-card">
+                        <h3><i class="fas fa-chart-area"></i> Receita Acumulada</h3>
+                        <canvas id="receita-chart" height="300"></canvas>
                     </div>
                 </div>
             </section>
@@ -159,30 +258,38 @@
         <div id="add-product-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Novo Produto</h2>
+                <h2><i class="fas fa-plus"></i> Novo Produto</h2>
                 <form id="add-product-form">
                     <div class="form-group">
-                        <label for="product-name">Nome do Produto:</label>
+                        <label for="product-name"><i class="fas fa-tag"></i> Nome do Produto:</label>
                         <input type="text" id="product-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-category">Categoria:</label>
+                        <label for="product-category"><i class="fas fa-list"></i> Categoria:</label>
                         <select id="product-category" required>
                             <option value="">Selecione uma categoria</option>
                             <option value="eletronicos">Eletrônicos</option>
                             <option value="informatica">Informática</option>
                             <option value="acessorios">Acessórios</option>
+                            <option value="games">Games</option>
+                            <option value="livros">Livros</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="product-price">Preço:</label>
+                        <label for="product-price"><i class="fas fa-dollar-sign"></i> Preço:</label>
                         <input type="number" id="product-price" step="0.01" required>
                     </div>
                     <div class="form-group">
-                        <label for="product-stock">Estoque Inicial:</label>
+                        <label for="product-stock"><i class="fas fa-warehouse"></i> Estoque Inicial:</label>
                         <input type="number" id="product-stock" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Cadastrar Produto</button>
+                    <div class="form-group">
+                        <label for="product-description"><i class="fas fa-align-left"></i> Descrição:</label>
+                        <textarea id="product-description" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Cadastrar Produto
+                    </button>
                 </form>
             </div>
         </div>
@@ -190,28 +297,42 @@
         <div id="add-sale-modal" class="modal">
             <div class="modal-content">
                 <span class="close">&times;</span>
-                <h2>Nova Venda</h2>
+                <h2><i class="fas fa-plus"></i> Nova Venda</h2>
                 <form id="add-sale-form">
                     <div class="form-group">
-                        <label for="sale-client">Cliente:</label>
+                        <label for="sale-client"><i class="fas fa-user"></i> Cliente:</label>
                         <input type="text" id="sale-client" required>
                     </div>
                     <div class="form-group">
-                        <label for="sale-products">Produtos:</label>
+                        <label for="sale-products"><i class="fas fa-box"></i> Produtos:</label>
                         <select id="sale-products" multiple required>
                             <option value="">Selecione os produtos</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="sale-quantities">Quantidades:</label>
+                        <label for="sale-quantities"><i class="fas fa-sort-numeric-up"></i> Quantidades:</label>
                         <input type="text" id="sale-quantities" placeholder="Ex: 2,1,3" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Registrar Venda</button>
+                    <div class="form-group">
+                        <label for="sale-payment"><i class="fas fa-credit-card"></i> Forma de Pagamento:</label>
+                        <select id="sale-payment" required>
+                            <option value="dinheiro">Dinheiro</option>
+                            <option value="cartao">Cartão</option>
+                            <option value="pix">PIX</option>
+                            <option value="boleto">Boleto</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Registrar Venda
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="supabase-integration.js"></script>
+    <script src="charts.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
